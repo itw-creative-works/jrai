@@ -1,13 +1,21 @@
 {
-  "TODO": "__module_domain, __module_name, __asset_file_name, __module_owner, __module_title, __module_class_name, __module_description, __module_feature",
-  "name": "__module_name",
-  "version": "0.0.2",
-  "description": "__module_description",
+  "name": "jrai",
+  "version": "1.0.0",
+  "description": "An AI assistant that can create an entire project for you with just a single prompt",
   "main": "./dist/index.js",
   "scripts": {
-    "test": "npm run prepare && ./node_modules/mocha/bin/mocha test/ --recursive --timeout=10000",
-    "prepare": "node -e 'require(`prepare-package`)()'",
+    "start": "npm run prepare && ./bin/jrai",
+    "test": "npm start -- prompt --input='Make an npm module that logs the current time' --log='true'",
+    "__start": "jrai prompt --input='Make an npm module that logs the current time'",
+    "_start": "node ./dist/index.js",
+    "_test": "npm run prepare && ./node_modules/mocha/bin/mocha test/ --recursive --timeout=10000",
+    "prepare": "node -e \"require('prepare-package')()\"",
     "prepare:watch": "nodemon -w ./src -e '*' --exec 'npm run prepare'"
+  },
+  "bin": {
+    "jrai": "bin/jrai",
+    "jr": "bin/jrai",
+    "junior": "bin/jrai"
   },
   "preparePackage": {
     "input": "./src",
@@ -15,7 +23,7 @@
     "replace": {}
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=16"
   },
   "os": [
     "darwin",
@@ -28,22 +36,27 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/__module_owner/__module_name"
+    "url": "git+https://github.com/itw-creative-works/jrai"
   },
   "keywords": [
-    "__module_name"
+    "jrai"
   ],
   "author": "ITW Creative Works",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/__module_owner/__module_name/issues"
+    "url": "https://github.com/itw-creative-works/jrai/issues"
   },
-  "homepage": "https://__module_domain",
+  "homepage": "https://itwcreativeworks.com",
   "dependencies": {
-    "itwcw-package-analytics": "^1.0.1"
+    "@inquirer/prompts": "^7.2.0",
+    "inquirer": "^12.2.0",
+    "itwcw-package-analytics": "^1.0.1",
+    "node-powertools": "^1.7.0",
+    "wonderful-fetch": "^1.2.2",
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
     "mocha": "^8.4.0",
-    "prepare-package": "^1.1.5"
+    "prepare-package": "^1.1.13"
   }
 }

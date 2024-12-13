@@ -1,53 +1,172 @@
-(function (root, factory) {
-  // https://github.com/umdjs/umd/blob/master/templates/returnExports.js
-  if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-    define([], factory);
-  } else if (typeof module === 'object' && module.exports) {
-    // Node. Does not work with strict CommonJS, but
-    // only CommonJS-like environments that support module.exports,
-    // like Node.
-    module.exports = factory();
-  } else {
-    // Browser globals (root is window)
-    root.returnExports = factory();
-  }
-}(typeof self !== 'undefined' ? self : this, function () {
+// Libraries
+const path = require('path');
+const jetpack = require('fs-jetpack');
+const fetch = require('wonderful-fetch');
+const { template } = require('node-powertools');
 
-  var environment = (Object.prototype.toString.call(typeof process !== 'undefined' ? process : 0) === '[object process]') ? 'node' : 'browser';
+// Main Function
+function Main() {
+  const self = this;
+}
 
-  var SOURCE = 'library';
-  var VERSION = '{version}';
+Main.prototype.prompt = function (options) {
+  const self = this;
 
-  function __module_title(options) {
-    var self = this;
-
-    self.options = options || {};
-
-    return self
-  };
-
-  __module_title.prototype.method = function (options) {
-    var self = this;
-
+  return new Promise(async function(resolve, reject) {
+    // Default options
     options = options || {};
+    options.input = options.input || '';
+    options.model = options.model || 'gpt-4o';
+    options.log = typeof options.log === 'undefined' ? false : options.log;
 
-    return new Promise(function(resolve, reject) {
+    // Log
+    // console.log('Processing:', options);
 
-    });
-  }
-
-  // Register
-  if (environment === 'browser') {
-    try {
-      window.__module_title = __module_title;
-    } catch (e) {
+    // Check if process.env.OPENAI_API_KEY is set
+    if (!process.env.OPENAI_API_KEY) {
+      return reject(new Error('Error: OPENAI_API_KEY environment variable not set.'));
     }
-  }
 
-  // Just return a value to define the module export.
-  // This example returns an object, but the module
-  // can return a function as the exported value.
-  return __module_title; // Enable if using UMD
+    // Check that prompt is not empty
+    if (!options.input) {
+      return reject(new Error('Error: No input provided.'));
+    }
 
-}));
+    try {
+      // Log
+      console.log('Getting instructions...');
+
+      // Request instructions
+      const instructions = await self.request(Object.assign({}, options, {
+        prompt: 'instructions',
+        response: 'json',
+      }))
+
+      // Log
+      console.log('Preparing to run with the following instructions:');
+      instructions.list.forEach((item, index) => {
+        console.log(`${index + 1}: ${item.command} ${item.arguments.join(' ')}`);
+      });
+
+      // Promises
+      const promises = [];
+
+      // Loop through instructions
+      instructions.list.forEach((item, index) => {
+        if (item.command === 'write') {
+          promises.push(
+            self.request(Object.assign({}, options, {
+              prompt: 'task',
+              input: {
+                command: 'write',
+                summary: instructions.summary,
+                arguments: item.arguments,
+              },
+              response: 'text',
+            }))
+            .then((response) => {
+              if (options.log) {
+                console.log(`Write: ${response}`);
+              }
+
+              // Write to file
+              jetpack.write(path.join('_test', item.arguments[0]), response);
+
+              // Return
+              return response;
+            })
+          );
+        }
+      });
+
+      // Wait
+      await Promise.all(promises);
+
+      // Log
+      console.log('Done!');
+    } catch (e) {
+      return reject(new Error(`Error processing: ${e.message}`));
+    }
+  });
+};
+
+// Request Function
+Main.prototype.request = function (options) {
+  const self = this;
+
+  return new Promise(async function(resolve, reject) {
+    // Default options
+    options = options || {};
+    options.prompt = options.prompt || '';
+    options.input = options.input || '';
+    options.response = options.response || 'json';
+    options.maxTokens = options.maxTokens || 1024 * 16;
+
+    // Log
+    // console.log('Request:', options);
+    const response = options.response === 'json'
+      ? { type: 'json_object' }
+      : undefined;
+
+    try {
+      // Load prompt file
+      const base = path.join(__dirname, 'prompts', options.prompt);
+      const system = jetpack.read(path.join(base, 'system.md'));
+      const user = jetpack.read(path.join(base, 'user.md'));
+
+      const config = {
+        method: 'post',
+        response: 'json',
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+        },
+        body: {
+          model: options.model,
+          response_format: response,
+          messages: [
+            {
+              role: 'system',
+              content: template(system, { input: options.input }),
+            },
+            {
+              role: 'user',
+              content: template(user, { input: options.input }),
+            },
+          ],
+          temperature: options.temperature,
+          max_completion_tokens: options.maxTokens,
+        }
+      }
+
+      // Log
+      if (options.log) {
+        console.log('Request', config.body.messages);
+      }
+
+      // Fetch
+      fetch('https://api.openai.com/v1/chat/completions', config)
+      .then(r => {
+        const content = options.response === 'json'
+          ? JSON.parse(r.choices[0].message.content)
+          : r.choices[0].message.content;
+
+        // Log
+        if (options.log) {
+          console.log('Response:', content);
+        }
+
+        // Check for error
+        if (content.error) {
+          return reject(new Error('Error requesting: ' + content.error));
+        }
+
+        // Resolve
+        return resolve(content);
+      })
+    } catch (e) {
+      return reject(new Error(`Error requesting: ${e.message}`));
+    }
+  });
+};
+
+module.exports = Main;
