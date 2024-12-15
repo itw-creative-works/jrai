@@ -3,6 +3,7 @@ const path = require('path');
 const jetpack = require('fs-jetpack');
 const fetch = require('wonderful-fetch');
 const { template } = require('node-powertools');
+const dotenv = require('dotenv').config();
 
 // Main Function
 function Main() {
