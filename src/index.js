@@ -18,6 +18,7 @@ Main.prototype.prompt = function (options) {
     options.input = options.input || '';
     options.model = options.model || 'gpt-4o';
     options.log = typeof options.log === 'undefined' ? false : options.log;
+    options.debug = typeof options.debug === 'undefined' ? false : options.debug;
 
     // Log
     // console.log('Processing:', options);
@@ -59,8 +60,9 @@ Main.prototype.prompt = function (options) {
               prompt: 'task',
               input: {
                 command: 'write',
-                summary: instructions.summary,
                 arguments: item.arguments,
+                summary: instructions.summary,
+                original: options.input,
               },
               response: 'text',
             }))
@@ -70,7 +72,7 @@ Main.prototype.prompt = function (options) {
               }
 
               // Write to file
-              jetpack.write(path.join('_test', item.arguments[0]), response);
+              jetpack.write(path.join(options.debug ? '_debug' : '', item.arguments[0]), response);
 
               // Return
               return response;
