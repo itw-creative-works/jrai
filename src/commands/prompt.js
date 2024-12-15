@@ -13,7 +13,7 @@ module.exports = async function (options) {
       message: 'What would you like to make today?',
       default: undefined,
       value: options.input,
-      multiline: true
+      multiline: true,
     });
     const model = await ask({
       message: 'What AI model are we using?',
@@ -52,6 +52,6 @@ function ask(options) {
   return inquirer.input({
     message: options.message,
     default: options.default,
-    multiline: options.multiline
+    multiline: options.multiline,
   });
 }
