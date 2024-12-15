@@ -13,7 +13,7 @@ module.exports = async function (options) {
       message: 'What would you like to make today?',
       default: undefined,
       value: options.input,
-      multiline: true,
+      multiline: options.multiline,
     });
     const model = await ask({
       message: 'What AI model are we using?',
@@ -45,13 +45,22 @@ module.exports = async function (options) {
 
 function ask(options) {
   options = options || {};
+
+  // If a value is provided, return it
   if (options.value) {
     return options.value;
+  }
+
+  // Check if multuiline is enabled
+  if (options.multiline) {
+    return inquirer.editor({
+      message: options.message,
+      default: options.default,
+    });
   }
 
   return inquirer.input({
     message: options.message,
     default: options.default,
-    multiline: options.multiline,
   });
 }

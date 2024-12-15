@@ -69,6 +69,13 @@ If you wanted to make an NPM module, your project structure might look like this
 └── index.js
 ```
 
+#### Options
+* `--input` - The input you want to provide to Jr. AI (default: `<empty>`)
+* `--model` - The model you want to use (default: `gpt-4o`)
+* `--multiline` - Enable multiline input (default: `false`)
+* `--log` - Log the output to the console (default: `false`)
+* `--debug` - Write to `_debug` file (default: `false`)
+
 ## 📘 Using Jr. AI
 After you have followed the install step, you can start using `jrai` to enhance your project.
 
