@@ -1,7 +1,7 @@
 const inquirer = require('@inquirer/prompts');
 
 module.exports = async function (options) {
-  console.log('Welcome to Jr.AI! Please provide some information to get started.');
+  console.log(`Welcome to Jr.AI v{version}! Please provide some information to get started.`);
 
   // Log
   // console.log('Options:', options);
