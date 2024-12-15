@@ -54,7 +54,10 @@ Main.prototype.prompt = function (options) {
       // Log
       console.log('Preparing to run with the following instructions:');
       instructions.list.forEach((item, index) => {
-        const truncatedArgs = item.arguments.map(arg => arg.length > 100 ? arg.slice(0, 100) : arg);
+        const truncatedArgs = item.arguments.map(arg => {
+          const truncated = arg.length > 100 ? arg.slice(0, 100) : arg;
+          return truncated.replace(/\n/g, ' ');
+        });
         console.log(`${index + 1}: ${item.command} => ${truncatedArgs.join(', ')}`);
       });
 
