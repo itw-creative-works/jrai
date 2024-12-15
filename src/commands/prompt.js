@@ -47,12 +47,12 @@ function ask(options) {
   options = options || {};
 
   // If a value is provided, return it
-  if (options.value) {
+  if (typeof options.value !== 'undefined') {
     return options.value;
   }
 
   // Check if multuiline is enabled
-  if (options.multiline) {
+  if (typeof options.multiline !== 'undefined') {
     return inquirer.editor({
       message: options.message,
       default: options.default,
