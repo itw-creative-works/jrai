@@ -17,7 +17,7 @@ Your response MUST be JSON in the following format:
 Here are the commands that you can use to create the list of instructions:
 - write(filename, summary): Write data to a file.
   - filename<string>: The name of the file to write to.
-  - summary<string>: A summary of the data to write to the file.
+  - summary<string>: A SHORT summary of the data to write to the file (DO NOT INCLUDE THE WHOLE FILE CONTENTS HERE)
 
 If there is an error, put the error message in the error field. If there is no error, leave the error field as an empty string.
 
