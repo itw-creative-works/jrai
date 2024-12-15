@@ -34,8 +34,15 @@ Main.prototype.prompt = function (options) {
     }
 
     try {
+      const base = path.join(options.debug ? '_debug' : '');
+
       // Log
       console.log('Getting instructions...');
+
+      // If log is enabled, log the current directory that jetpack wil be writing to
+      if (options.log) {
+        console.log('Writing to:', base);
+      }
 
       // Request instructions
       const instructions = await self.request(Object.assign({}, options, {
@@ -67,12 +74,14 @@ Main.prototype.prompt = function (options) {
               response: 'text',
             }))
             .then((response) => {
+              const file = path.join(base, item.arguments[0]);
+
               if (options.log) {
-                console.log(`Write: ${response}`);
+                console.log(`Writing to (${file}): ${response}`);
               }
 
               // Write to file
-              jetpack.write(path.join(options.debug ? '_debug' : '', item.arguments[0]), response);
+              jetpack.write(file, response);
 
               // Return
               return response;

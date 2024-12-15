@@ -1,20 +1,23 @@
 const inquirer = require('@inquirer/prompts');
+const package = require('../../package.json');
 
 module.exports = async function (options) {
-  console.log(`Welcome to Jr.AI v{version}! Please provide some information to get started.`);
+  console.log(`Welcome to Jr.AI v${package.version}! Please provide some information to get started.`);
 
   // Log
   // console.log('Options:', options);
 
   try {
     // Collect answers using the new @inquirer/prompts methods
-    const input = await inquirer.input({
+    const input = await ask({
       message: 'What would you like to make today?',
-      default: options.input,
+      default: undefined,
+      value: options.input,
     });
-    const model = await inquirer.input({
+    const model = await ask({
       message: 'What AI model are we using?',
       default: 'gpt-4o',
+      value: options.model,
     });
     // const language = await list({
     //   message: 'What is your favorite programming language?',
@@ -32,8 +35,21 @@ module.exports = async function (options) {
     await processor.prompt({
       input: input,
       model: model,
+      ...options
     });
   } catch (e) {
     console.error(`Error during the prompt: ${e.message}`);
   }
 };
+
+function ask(options) {
+  options = options || {};
+  if (options.value) {
+    return options.value;
+  }
+
+  return inquirer.input({
+    message: options.message,
+    default: options.default,
+  });
+}

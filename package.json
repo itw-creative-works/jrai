@@ -1,11 +1,11 @@
 {
   "name": "jrai",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "An AI assistant that can create an entire project for you with just a single prompt",
   "main": "./dist/index.js",
   "scripts": {
     "start": "npm run prepare && ./bin/jrai",
-    "test": "npm start -- prompt --input='Make an npm module that logs the current time' --log='true'",
+    "test": "npm start -- prompt --input='Make an npm module that logs the current time' ---model='gpt-4o' --log='true' --debug='true'",
     "__start": "jrai prompt --input='Make an npm module that logs the current time'",
     "_start": "node ./dist/index.js",
     "_test": "npm run prepare && ./node_modules/mocha/bin/mocha test/ --recursive --timeout=10000",
