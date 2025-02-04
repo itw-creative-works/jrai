@@ -1,6 +1,6 @@
 {
   "name": "jrai",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "An AI assistant that can create an entire project for you with just a single prompt",
   "main": "./dist/index.js",
   "scripts": {
@@ -49,11 +49,11 @@
   },
   "homepage": "https://itwcreativeworks.com",
   "dependencies": {
-    "@inquirer/prompts": "^7.2.0",
+    "@inquirer/prompts": "^7.3.1",
     "dotenv": "^16.4.7",
     "itwcw-package-analytics": "^1.0.1",
-    "node-powertools": "^1.7.0",
-    "wonderful-fetch": "^1.2.2",
+    "node-powertools": "^2.1.4",
+    "wonderful-fetch": "^1.3.1",
     "yargs": "^17.7.2"
   },
   "devDependencies": {

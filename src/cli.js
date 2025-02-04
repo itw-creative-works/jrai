@@ -19,7 +19,7 @@ Main.prototype.process = async function (options) {
 
     // Check if the command file exists
     if (!jetpack.exists(commandFile)) {
-      throw new Error('Error: Command "${command}" not found. Defaulting to "prompt".');
+      throw new Error(`Error: Command "${command}" not found.`);
     }
 
     // Execute the command
