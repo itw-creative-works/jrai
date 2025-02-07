@@ -52,7 +52,7 @@ function ask(options) {
   }
 
   // Check if multuiline is enabled
-  if (typeof options.multiline !== 'undefined') {
+  if (options.multiline) {
     return inquirer.editor({
       message: options.message,
       default: options.default,
