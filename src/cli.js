@@ -3,14 +3,15 @@ const path = require('path');
 const jetpack = require('fs-jetpack');
 
 // Command Aliases
-const commandAliases = {
+const DEFAULT = 'prompt';
+const ALIASES = {
   prompt: ['-p', 'p', 'ask'],
   version: ['-v', '--version'],
 };
 
 // Function to resolve command name from aliases
 function resolveCommand(command) {
-  for (const [key, aliases] of Object.entries(commandAliases)) {
+  for (const [key, aliases] of Object.entries(ALIASES)) {
     if (command === key || aliases.includes(command)) {
       return key;
     }
@@ -22,8 +23,8 @@ function resolveCommand(command) {
 function Main() {}
 
 Main.prototype.process = async function (options) {
-  // Determine the command (default to "prompt" if none provided)
-  const inputCommand = options._[0] || 'prompt';
+  // Determine the command (use default if not provided)
+  const inputCommand = options._[0] || DEFAULT;
   const command = resolveCommand(inputCommand);
 
   try {
