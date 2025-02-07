@@ -9,7 +9,6 @@ const ALIASES = {
   version: ['-v', '--version'],
 };
 
-
 // Function to resolve command name from aliases
 function resolveCommand(options) {
   // Check if a command was explicitly passed via positional argument
@@ -39,6 +38,10 @@ function resolveCommand(options) {
 function Main() {}
 
 Main.prototype.process = async function (options) {
+  // Fix options
+  options = options || {};
+  options._ = options._ || [];
+
   // Determine the command (use default if not provided)
   const command = resolveCommand(options);
 

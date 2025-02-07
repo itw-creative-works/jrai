@@ -1,6 +1,6 @@
 {
   "name": "jrai",
-  "version": "1.1.11",
+  "version": "1.1.12",
   "description": "An AI assistant that can create an entire project for you with just a single prompt",
   "main": "./dist/index.js",
   "scripts": {
